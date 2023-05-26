@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	
+	<!--매퍼 인터페이스의 위치를 정확한 풀경로로 지정
+		이 네임스페이스를 통해서 매퍼인터페이스와 연결된다.
+		Dao Layer의 매퍼 인터페이스가 있는 정확한 주소여야함.-->
+<mapper namespace="com.javalab.logging.dao.BoardMapperInterface">
+
+	<!--게시물 리스트 -->
+	<select id="selectBoardList" resultType="BoardVo">
+		select no, 
+			title, 
+			writer, 
+			hit, 
+			to_char(regdate,'yyyy-mm-dd') as regdate 
+		from simple_board 
+		order by regdate desc
+	</select>
+	
+	<!--게시물 한개(상세보기) -->
+	<select id="getBoardById" parameterType="int" resultType="BoardVo">
+		select no, 
+			title, 
+			content, 
+			writer, 
+			hit, 
+			to_char(regdate,'yyyy-mm-dd') as regdate 
+		from simple_board 
+		where no=#{param1}
+	</select>
+	
+	<!--게시물 등록 -->
+	<insert id="insertBoard" parameterType="BoardVo" >
+		insert into simple_board(
+			no, 
+			title, 
+			content, 
+			writer,
+			sysdate
+		)
+		values(
+			seq_simple_board.nextval, 
+			#{title}, 
+			#{content}, 
+			#{writer},
+			sysdate
+		)
+	</insert>
+	
+	<!--게시물 수정 -->
+	<update id="modifyBoard" parameterType="BoardVo" >
+		update simple_board 
+		set 
+			title=#{title}, 
+			content=#{content}, 
+			writer=#{writer}
+		where 
+			no=#{no}
+	</update>
+	
+	<!--게시물 삭제 -->
+	<delete id="deleteBoard" parameterType="int" >
+		delete from simple_board 
+		where no=#{no}
+	</delete>
+	
+	<!-- 게시물 조회수 증가 -->
+	<select id="updateHitCount" parameterType="int">
+		update simple_board 
+			set hit = hit + 1
+			where no = #{param1}
+			
+	</select>
+	
+	</mapper>
+	
+	
